@@ -1,0 +1,9 @@
+# Ignorar carpetas de compilación
+build/
+Build/
+
+# Ignorar cachés de herramientas y servidores de lenguaje (como clangd)
+.cache/
+
+# Ignorar archivos de configuración de compilación autogenerados
+compile_commands.json
