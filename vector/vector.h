@@ -2,7 +2,6 @@
 #define VECTOR_HPP
 
 #include <cstddef>
-#include <utility>
 
 namespace utec {
 
