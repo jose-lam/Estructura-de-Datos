@@ -111,9 +111,10 @@ public:
 
     void erase(size_t index) {
         if (index >= sz) return;
-        if (index != sz-1) std::swap(data[sz-1], data[index]);
+        for (size_t i = index; i < sz - 1; ++i) {
+            data[i] = std::move(data[i + 1]);
+        }
         pop_back();
-        --sz;
     }
 
     void clear() {
