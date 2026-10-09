@@ -6,6 +6,7 @@
 namespace utec {
     template <typename T>
     struct stack {
+    private:
         struct Node {
             T data;
             Node* next;
@@ -14,20 +15,21 @@ namespace utec {
         Node* tope = nullptr;
         size_t sz = 0;
 
+    public:
         stack() = default;
 
         ~stack() {
             clear();
         }
 
-        void push(const T& value){
+        void push(const T& value) {
             Node* new_node = new Node(value);
             new_node->next = tope;
             tope = new_node;
             ++sz;
         }
 
-        void pop(){
+        void pop() {
             if (empty()) return;
             Node* temp = tope;
             tope = tope->next;
@@ -36,10 +38,9 @@ namespace utec {
         }
 
         void clear() {
-            while(!empty()){
+            while (!empty()) {
                 pop();
             }
-            sz = 0;
         }
 
         T& top() { return tope->data; }
@@ -49,6 +50,5 @@ namespace utec {
         bool empty() const { return tope == nullptr; }
     };
 }
-
 
 #endif

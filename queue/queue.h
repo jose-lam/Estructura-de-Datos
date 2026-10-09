@@ -6,6 +6,7 @@
 namespace utec {
     template <typename T>
     struct queue {
+    private:
         struct Node {
             T data;
             Node* next;
@@ -15,13 +16,14 @@ namespace utec {
         Node* last = nullptr;
         size_t sz = 0;
 
+    public:
         queue() = default;
 
         ~queue() {
             clear();
         }
 
-        void enqueue(const T& value){
+        void enqueue(const T& value) {
             Node* new_node = new Node(value);
             if (empty()) first = last = new_node;
             else {
@@ -31,25 +33,23 @@ namespace utec {
             ++sz;
         }
 
-        void dequeue(){
+        void dequeue() {
             if (empty()) return;
             if (first == last) last = nullptr;
             Node* temp = first;
-            first = first -> next;
+            first = first->next;
             delete temp;
             --sz;
         }
 
         void clear() {
-            while(!empty()){
+            while (!empty()) {
                 dequeue();
             }
-            sz = 0;
         }
 
         T& front() { return first->data; }
         const T& front() const { return first->data; }
-
 
         T& back() { return last->data; }
         const T& back() const { return last->data; }
@@ -58,6 +58,5 @@ namespace utec {
         bool empty() const { return first == nullptr; }
     };
 }
-
 
 #endif

@@ -1,11 +1,12 @@
-#ifndef QUEUE_HPP
-#define QUEUE_HPP
+#ifndef DEQUE_HPP
+#define DEQUE_HPP
 
 #include <cstddef>
 
 namespace utec {
     template <typename T>
     struct deque {
+    private:
         struct Node {
             T data;
             Node* next;
@@ -15,6 +16,7 @@ namespace utec {
         Node* last = nullptr;
         size_t sz = 0;
 
+    public:
         deque() = default;
 
         ~deque() {
@@ -68,6 +70,5 @@ namespace utec {
         bool empty() const { return first == nullptr; }
     };
 }
-
 
 #endif

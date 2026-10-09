@@ -7,6 +7,7 @@ namespace utec {
 
 template <typename T>
 struct list {
+private:
     struct DoubleNode {
         T data;
         DoubleNode* prev;
@@ -34,6 +35,7 @@ struct list {
         return current;
     }
 
+public:
     list() : head(nullptr), tail(nullptr), sz(0) {}
 
     ~list() {
@@ -140,36 +142,13 @@ struct list {
             push_back(value);
             return;
         }
-        DoubleNode* current = get_node(index - 1);
-        insert_after(current, value);
-    }
-
-    DoubleNode* insert_after(DoubleNode* node, const T& value) {
-        if (node == nullptr || node == tail) {
-            push_back(value);
-            return tail;
-        }
+        DoubleNode* before = get_node(index - 1);
         DoubleNode* new_node = new DoubleNode(value);
-        new_node->next = node->next;
-        new_node->prev = node;
-        node->next->prev = new_node;
-        node->next = new_node;
+        new_node->prev = before;
+        new_node->next = before->next;
+        before->next->prev = new_node;
+        before->next = new_node;
         ++sz;
-        return new_node;
-    }
-
-    DoubleNode* insert_before(DoubleNode* node, const T& value) {
-        if (node == nullptr || node == head) {
-            push_front(value);
-            return head;
-        }
-        DoubleNode* new_node = new DoubleNode(value);
-        new_node->prev = node->prev;
-        new_node->next = node;
-        node->prev->next = new_node;
-        node->prev = new_node;
-        ++sz;
-        return new_node;
     }
 
     void erase(size_t index) {
@@ -183,22 +162,9 @@ struct list {
             return;
         }
         DoubleNode* target = get_node(index);
-        erase(target);
-    }
-
-    void erase(DoubleNode* node) {
-        if (node == nullptr || empty()) return;
-        if (node == head) {
-            pop_front();
-            return;
-        }
-        if (node == tail) {
-            pop_back();
-            return;
-        }
-        node->prev->next = node->next;
-        node->next->prev = node->prev;
-        delete node;
+        target->prev->next = target->next;
+        target->next->prev = target->prev;
+        delete target;
         --sz;
     }
 
@@ -219,13 +185,13 @@ struct list {
     T& back() { return tail->data; }
     const T& back() const { return tail->data; }
 
-    DoubleNode* find(const T& value) {
+    bool find(const T& value) const {
         DoubleNode* current = head;
         while (current != nullptr) {
-            if (current->data == value) return current;
+            if (current->data == value) return true;
             current = current->next;
         }
-        return nullptr;
+        return false;
     }
 
     void reverse() {

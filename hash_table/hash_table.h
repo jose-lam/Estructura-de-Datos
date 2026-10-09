@@ -1,37 +1,40 @@
-#ifndef HASH_TABLE_CPP
-#define HASH_TABLE_CPP
+#ifndef HASH_TABLE_HPP
+#define HASH_TABLE_HPP
 
+#include <cstddef>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace utec {
 
 template <typename T>
 struct func_hash {
-    long long operator()(const T& key) const {
-        long long x = static_cast<long long>(key);
-        return (x < 0 ? -x : x) * 67LL;
+    unsigned long long operator()(const T& key) const {
+        return static_cast<unsigned long long>(key) * 67ULL;
     }
 };
 
 template <>
 struct func_hash<std::string> {
-    long long operator()(const std::string& key) const {
+    unsigned long long operator()(const std::string& key) const {
         unsigned int h = 5333;
         for (char c : key) {
             h = h * 67 + c;
         }
-        return static_cast<long long>(h);
+        return h;
     }
 };
 
 template <typename Tc, typename Tv>
 struct hash_table {
-    std::vector<std::vector<std::pair<Tc,Tv>>> bucket;
+private:
+    std::vector<std::vector<std::pair<Tc, Tv>>> bucket;
     long long m;
     size_t sz = 0;
 
-    hash_table(long long n) : m(n > 0 ? n : 1) {
+public:
+    explicit hash_table(long long n) : m(n > 0 ? n : 1) {
         bucket.resize(m);
     }
 
@@ -60,7 +63,7 @@ struct hash_table {
 
     long long hash(const Tc& key) const {
         func_hash<Tc> fh;
-        return fh(key) % m;
+        return static_cast<long long>(fh(key) % static_cast<unsigned long long>(m));
     }
 
     bool erase(const Tc& key) {
@@ -86,7 +89,10 @@ struct hash_table {
         }
         return false;
     }
+
+    size_t size() const { return sz; }
 };
+
 }
 
 #endif

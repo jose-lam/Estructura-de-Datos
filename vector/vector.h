@@ -15,16 +15,13 @@ private:
 public:
     vector() : data(nullptr), sz(0), cap(0) {}
 
-    explicit vector(size_t initial_cap) : sz(initial_cap), cap(initial_cap) {
-        data = new T[initial_cap]();
-    }
+    explicit vector(size_t n) : data(new T[n]()), sz(n), cap(n) {}
 
     ~vector() {
         delete[] data;
     }
 
-    vector(const vector& other) : sz(other.sz), cap(other.cap) {
-        data = new T[cap];
+    vector(const vector& other) : data(new T[other.cap]), sz(other.sz), cap(other.cap) {
         for (size_t i = 0; i < sz; ++i) {
             data[i] = other.data[i];
         }
@@ -56,7 +53,6 @@ public:
             data = other.data;
             sz = other.sz;
             cap = other.cap;
-
             other.data = nullptr;
             other.sz = 0;
             other.cap = 0;
@@ -69,7 +65,7 @@ public:
 
         T* new_data = new T[new_cap]();
         for (size_t i = 0; i < sz; ++i) {
-            new_data[i] = std::move(data[i]);
+            new_data[i] = data[i];
         }
         delete[] data;
         data = new_data;
@@ -77,16 +73,15 @@ public:
     }
 
     void resize(size_t new_size) {
-        if (new_size > cap) {
-            reserve(new_size);
+        if (new_size > cap) reserve(new_size);
+        for (size_t i = sz; i < new_size; ++i) {
+            data[i] = T();
         }
         sz = new_size;
     }
 
     void push_back(const T& value) {
-        if (sz == cap) {
-            reserve(cap == 0 ? 1 : cap * 2);
-        }
+        if (sz == cap) reserve(cap == 0 ? 1 : cap * 2);
         data[sz] = value;
         ++sz;
     }
@@ -98,11 +93,9 @@ public:
 
     void insert(size_t index, const T& value) {
         if (index > sz) return;
-        if (sz == cap) {
-            reserve(cap == 0 ? 1 : cap * 2);
-        }
+        if (sz == cap) reserve(cap == 0 ? 1 : cap * 2);
         for (size_t i = sz; i > index; --i) {
-            data[i] = std::move(data[i - 1]);
+            data[i] = data[i - 1];
         }
         data[index] = value;
         ++sz;
@@ -110,10 +103,10 @@ public:
 
     void erase(size_t index) {
         if (index >= sz) return;
-        for (size_t i = index; i < sz - 1; ++i) {
-            data[i] = std::move(data[i + 1]);
+        for (size_t i = index; i + 1 < sz; ++i) {
+            data[i] = data[i + 1];
         }
-        pop_back();
+        --sz;
     }
 
     void clear() {

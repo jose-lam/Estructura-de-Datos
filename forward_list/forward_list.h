@@ -6,6 +6,7 @@
 namespace utec {
     template <typename T>
     struct forward_list {
+    private:
         struct SingleNode {
             T data;
             SingleNode* next;
@@ -15,6 +16,7 @@ namespace utec {
         SingleNode* tail;
         size_t sz;
 
+    public:
         forward_list() : head(nullptr), tail(nullptr), sz(0) {}
 
         ~forward_list() {
@@ -130,17 +132,6 @@ namespace utec {
             ++sz;
         }
 
-        void insert(SingleNode* node, const T& value) {
-            if (node == nullptr || node == tail) {
-                push_back(value);
-                return;
-            }
-            SingleNode* new_node = new SingleNode(value);
-            new_node->next = node->next;
-            node->next = new_node;
-            ++sz;
-        }
-
         void erase(size_t index) {
             if (index >= sz) return;
             if (index == 0) {
@@ -160,26 +151,6 @@ namespace utec {
             --sz;
         }
 
-        void erase(SingleNode* node) {
-            if (node == nullptr || empty()) return;
-            if (node == head) {
-                pop_front();
-                return;
-            }
-            SingleNode* current = head;
-            while (current != nullptr && current->next != node) {
-                current = current->next;
-            }
-            if (current != nullptr) {
-                current->next = node->next;
-                if (node == tail) {
-                    tail = current;
-                }
-                delete node;
-                --sz;
-            }
-        }
-
         void clear() {
             while (head != nullptr) {
                 SingleNode* temp = head;
@@ -196,13 +167,13 @@ namespace utec {
         T& back() { return tail->data; }
         const T& back() const { return tail->data; }
 
-        SingleNode* find(const T& value) {
+        bool find(const T& value) const {
             SingleNode* current = head;
             while (current != nullptr) {
-                if (current->data == value) return current;
+                if (current->data == value) return true;
                 current = current->next;
             }
-            return nullptr;
+            return false;
         }
 
         void reverse() {
