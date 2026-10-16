@@ -46,6 +46,10 @@ namespace utec {
             sift_up(data.size()-1);
         }
 
+        void clear() {
+            data.clear();
+        }
+
         private:
 
         std::vector<T> data;

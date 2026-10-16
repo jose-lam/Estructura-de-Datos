@@ -58,6 +58,56 @@ namespace utec {
         size_t size() const { return sz; }
         bool empty() const { return sz == 0; }
 
+        int altura() {
+            return h(root);
+        }
+
+        T* successor(const T& k) {
+            Node* current = root;
+            Node* succ = nullptr;
+
+            while (current != nullptr) {
+                if (k < current->data) {
+                    succ = current;
+                    current = current->left;
+                }
+                else if (k > current->data) {
+                    current = current->right;
+                }
+                else {
+                    if (current->right != nullptr) {
+                        succ = min_node(current->right);
+                    }
+                    break;
+                }
+            }
+
+            return (succ != nullptr) ? &succ->data : nullptr;
+        }
+
+        T* predecessor(const T& k) {
+            Node* current = root;
+            Node* pred = nullptr;
+
+            while (current != nullptr) {
+                if (k > current->data) {
+                    pred = current;
+                    current = current->right;
+                }
+                else if (k < current->data) {
+                    current = current->left;
+                }
+                else {
+                    if (current->left != nullptr) {
+                        pred = max_node(current->left);
+                    }
+                    break;
+                }
+            }
+
+            return (pred != nullptr) ? &pred->data : nullptr;
+        }
+
     private:
 
         int h (Node* current) {

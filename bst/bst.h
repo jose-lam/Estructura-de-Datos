@@ -2,6 +2,7 @@
 #define BST_HPP
 
 #include <cstddef>
+#include <iostream>
 
 namespace utec {
     template <typename T>
@@ -31,28 +32,50 @@ namespace utec {
             return (ans == nullptr) ? nullptr : &ans->data;
         }
 
-        T* successor (const T& k) {
-            Node* current = search(k, root);
-            if (current == nullptr) return nullptr;
-            if (current->right != nullptr) return &min_node(current->right)->data;
-            Node* padre = current->padre;
-            while (padre != nullptr and current == padre->right) {
-                current = padre;
-                padre = padre->padre;
+        T* successor(const T& k) {
+            Node* current = root;
+            Node* succ = nullptr;
+
+            while (current != nullptr) {
+                if (k < current->data) {
+                    succ = current;
+                    current = current->left;
+                }
+                else if (k > current->data) {
+                    current = current->right;
+                }
+                else {
+                    if (current->right != nullptr) {
+                        succ = min_node(current->right);
+                    }
+                    break;
+                }
             }
-            return (padre == nullptr) ? nullptr : &padre->data;
+
+            return (succ != nullptr) ? &succ->data : nullptr;
         }
 
-        T* predeccessor (const T& k) {
-            Node* current = search(k, root);
-            if (current == nullptr) return nullptr;
-            if (current->left != nullptr) return &max_node(current->left)->data;
-            Node* padre = current->padre;
-            while (padre != nullptr and current == padre->left) {
-                current = padre;
-                padre = padre->padre;
+        T* predecessor(const T& k) {
+            Node* current = root;
+            Node* pred = nullptr;
+
+            while (current != nullptr) {
+                if (k > current->data) {
+                    pred = current;
+                    current = current->right;
+                }
+                else if (k < current->data) {
+                    current = current->left;
+                }
+                else {
+                    if (current->left != nullptr) {
+                        pred = max_node(current->left);
+                    }
+                    break;
+                }
             }
-            return (padre == nullptr) ? nullptr : &padre->data;
+
+            return (pred != nullptr) ? &pred->data : nullptr;
         }
 
         T* min() {
@@ -118,6 +141,22 @@ namespace utec {
         size_t size() const { return sz; }
         bool empty() const { return sz == 0; }
 
+        void preorder() {
+            preorder(root);
+        }
+
+        void inorder() {
+            inorder(root);
+        }
+
+        void postorder() {
+            postorder(root);
+        }
+
+        int altura(const T& k) {
+            return altura(k, root);
+        }
+
     private:
         Node* search (const T& k, Node* current) {
             while (current != nullptr) {
@@ -152,6 +191,37 @@ namespace utec {
             if (current == nullptr) return nullptr;
             while (current->right != nullptr) current = current->right;
             return current;
+        }
+
+        void preorder(Node* current) {
+            if (current == nullptr) return;
+            std::cout << current->data << " ";
+            preorder(current->left);
+            preorder(current->right);
+        }
+
+        void inorder(Node* current) {
+            if (current == nullptr) return;
+            inorder(current->left);
+            std::cout << current->data << " ";
+            inorder(current->right);
+        }
+
+        void postorder(Node* current) {
+            if (current == nullptr) return;
+            postorder(current->left);
+            postorder(current->right);
+            std::cout << current->data << " ";
+        }
+
+        int altura (const T& k, Node* current) {
+            int h = 0;
+            while (current != nullptr) {
+                if (k < current->data) { current = current->left; ++h; }
+                else if (current->data < k) { current = current->right; ++h; }
+                else return h;
+            }
+            return h;
         }
     };
 }
